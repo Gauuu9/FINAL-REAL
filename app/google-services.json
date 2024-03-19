@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "67934825040",
+    "project_id": "groserie-13abd",
+    "storage_bucket": "groserie-13abd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67934825040:android:7f7ecbe23c06567d3aff55",
+        "android_client_info": {
+          "package_name": "com.example.groserie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe5tb9xpu2PdGHtGnh6lwnI4Bn69OuHfY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
