@@ -86,6 +86,7 @@ public class Register extends AppCompatActivity {
                             database.getReference().child("Users").child(id).setValue(userModel);
 
                             Toast.makeText(Register.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Register.this , Login.class));
                         }
                         else {
                             Toast.makeText(Register.this, "Registration failed"+task.getException(), Toast.LENGTH_SHORT).show();

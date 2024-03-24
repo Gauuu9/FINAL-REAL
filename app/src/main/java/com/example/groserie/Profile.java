@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +32,7 @@ public class Profile extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userId;
     Button logout;
+    Button deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,66 @@ public class Profile extends AppCompatActivity {
             }
 
         });
+
+
+        deleteButton = findViewById(R.id.deleteButton); // Add this line
+
+        deleteButton.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View view) {
+                deleteUserAndData();
+            }
+        });
+
+    }
+
+    private void deleteUserAndData() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user != null) {
+            String userId = user.getUid();
+
+            // Reference to the user data in the Realtime Database
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+            // Delete user account
+            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        // Account deletion successful
+                        Toast.makeText(Profile.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+
+                        // Delete user data from Realtime Database
+                        userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    // User data deletion successful
+                                    Toast.makeText(Profile.this, "User data deleted successfully", Toast.LENGTH_SHORT).show();
+
+                                    // Redirect to login or any other appropriate action
+                                    startActivity(new Intent(Profile.this, Login.class));
+                                    finish();
+                                } else {
+                                    // User data deletion failed
+                                    Toast.makeText(Profile.this, "Failed to delete user data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        // Account deletion failed
+                        Toast.makeText(Profile.this, "Failed to delete account: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } else {
+            // No user logged in
+            Toast.makeText(Profile.this, "No user logged in", Toast.LENGTH_SHORT).show();
+        }
     }
 }
+
+
 

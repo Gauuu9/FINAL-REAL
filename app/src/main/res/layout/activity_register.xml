@@ -121,11 +121,12 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="113dp"
-        android:layout_height="45dp"
+        android:layout_width="161dp"
+        android:layout_height="55dp"
         android:background="@drawable/round_shape"
         android:backgroundTint="#FF7900"
         android:text="Register"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
