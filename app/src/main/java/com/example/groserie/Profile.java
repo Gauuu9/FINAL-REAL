@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.view.View;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -34,6 +34,7 @@ public class Profile extends AppCompatActivity {
     Button logout;
     Button deleteButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,7 @@ public class Profile extends AppCompatActivity {
 
         name = findViewById(R.id.textView14);
         email = findViewById(R.id.textView23);
-        logout = findViewById(R.id.button8); // Assuming you have a button with id logoutButton in your layout
+        logout = findViewById(R.id.button8);
 
         auth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -88,6 +89,15 @@ public class Profile extends AppCompatActivity {
             }
 
         });
+        Button button22 = findViewById(R.id.button99);
+        button22.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Profile.this, UpdateProfile.class);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        });
 
 
         deleteButton = findViewById(R.id.deleteButton); // Add this line
@@ -99,7 +109,9 @@ public class Profile extends AppCompatActivity {
             }
         });
 
+
     }
+
 
     private void deleteUserAndData() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
