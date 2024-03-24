@@ -1,5 +1,6 @@
 package com.example.groserie;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +10,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.core.view.View;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,13 +44,13 @@ public class Profile extends AppCompatActivity {
 
         userId = auth.getCurrentUser().getUid();
 
-        DocumentReference documentReference = fStore.collection("Users").document(userId);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (value != null && value.exists()) {
-                    String userName = value.getString("name");
-                    String userEmail = value.getString("email");
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String userName = dataSnapshot.child("name").getValue(String.class);
+                    String userEmail = dataSnapshot.child("email").getValue(String.class);
                     if (userName != null && userEmail != null) {
                         name.setText(userName);
                         email.setText(userEmail);
@@ -53,10 +59,17 @@ public class Profile extends AppCompatActivity {
                         Toast.makeText(Profile.this, "User data is null", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // Handle the case where document does not exist
-                    Toast.makeText(Profile.this, "Document does not exist", Toast.LENGTH_SHORT).show();
+                    // Handle the case where data for this user does not exist
+                    Toast.makeText(Profile.this, "User data does not exist", Toast.LENGTH_SHORT).show();
                 }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(Profile.this, "Failed to fetch user data: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+
         });
 
         logout.setOnClickListener(new android.view.View.OnClickListener() {
